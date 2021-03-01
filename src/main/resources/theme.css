@@ -1,0 +1,73 @@
+.root {
+    -fx-window-border: #444444;
+    -fx-window-color: #999999;
+    -fx-window-text: #111111;
+    -fx-background-color: #FAFAFA;
+    -fx-font-family: "Pragmatica-ExtraLight";
+    -fx-font-weight: bold;
+}
+.label {
+    -fx-text-fill: darkgray;
+    -fx-font-size: 15;
+}
+.button {
+    -fx-background-color: lightgray;
+    -fx-text-fill: gray;
+    -fx-background-radius: 25;
+}
+#submit {
+    -fx-background-color: #343434;
+    -fx-text-fill: white;
+}
+#long {
+    -fx-border-color: darkgreen;
+    -fx-border-radius: 25;
+}
+#short {
+    -fx-border-color: red;
+    -fx-border-radius: 25;
+}
+.text-field {
+    -fx-background-radius: 25;
+    -fx-border-radius: 25;
+    -fx-border-width: 1.5px;
+    -fx-border-color: black;
+    -fx-text-fill: #454545;
+    -fx-prompt-text-fill: #666666;
+}
+#error {
+    -fx-border-color: red;
+    -fx-border-width: 2px;
+}
+.radio-button {
+    -fx-color: #CCCCCC;
+    -fx-text-fill: darkgray;
+    -fx-font-size: 13;
+}
+.radio-button:hover {
+    -fx-color: -fx-focused-base;
+}
+
+#tf2 {
+    -fx-background-color: #DDDDDD;
+    -fx-text-fill: #454545;
+    -fx-border-color: gray;
+}
+
+#connected {
+    -fx-fill: Green;
+}
+
+#disconnected {
+    -fx-fill: Darkred;
+}
+
+.menu-bar {
+    -fx-background-color: #FAFAFA;
+    -fx-font-family: Arial;
+    -fx-font-size: 12px;
+}
+
+.menu {
+    -fx-font-size: 12px;
+}

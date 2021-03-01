@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<GridPane xmlns="http://javafx.com/javafx"
+          xmlns:fx="http://javafx.com/fxml"
+          prefHeight="540.0" prefWidth="250.0"
+          stylesheets="@theme.css"
+          fx:controller="com.ioanmariciuc.Controller">
+<columnConstraints>
+    <ColumnConstraints hgrow="SOMETIMES" maxWidth="250.0" minWidth="10.0" prefWidth="137.0" />
+    <ColumnConstraints hgrow="SOMETIMES" maxWidth="129.0" minWidth="0.0" prefWidth="113.0" />
+</columnConstraints>
+<rowConstraints>
+    <RowConstraints maxHeight="192.0" minHeight="3.0" prefHeight="39.0" vgrow="SOMETIMES" />
+    <RowConstraints maxHeight="249.0" minHeight="10.0" prefHeight="166.0" vgrow="SOMETIMES" />
+    <RowConstraints maxHeight="173.0" minHeight="10.0" prefHeight="51.0" vgrow="SOMETIMES" />
+    <RowConstraints maxHeight="240.0" minHeight="10.0" prefHeight="125.0" vgrow="SOMETIMES" />
+    <RowConstraints maxHeight="240.0" minHeight="10.0" prefHeight="24.0" vgrow="SOMETIMES" />
+    <RowConstraints maxHeight="240.0" minHeight="10.0" prefHeight="135.0" vgrow="SOMETIMES" />
+</rowConstraints>
+<children>
+    <StackPane id="theme.css" prefHeight="61.0" prefWidth="250.0" GridPane.columnSpan="2147483647" GridPane.rowIndex="2">
+        <children>
+            <Label fx:id="labelStockName" contentDisplay="CENTER" text="STOCKNAME" textAlignment="CENTER">
+                <font>
+                    <Font size="16.0" />
+                </font>
+            </Label>
+        </children>
+        <GridPane.margin>
+            <Insets />
+        </GridPane.margin>
+    </StackPane>
+    <VBox alignment="TOP_CENTER" prefHeight="180.0" prefWidth="92.0" spacing="5.0" GridPane.rowIndex="1">
+        <children>
+            <TextField fx:id="tfSymbol" alignment="CENTER" prefHeight="35.0" prefWidth="97.0" promptText="Symbol" />
+            <TextField fx:id="tfEntry" alignment="CENTER" prefHeight="35.0" prefWidth="97.0" promptText="Entry" />
+            <TextField fx:id="tfStop" alignment="CENTER" prefHeight="35.0" prefWidth="97.0" promptText="Stop" />
+            <Button contentDisplay="CENTER" mnemonicParsing="false" onAction="#clickReset" prefHeight="25.0" prefWidth="79.0" text="RESET" textAlignment="CENTER" />
+        </children>
+        <GridPane.margin>
+            <Insets left="20.0" right="20.0" top="20.0" />
+        </GridPane.margin>
+    </VBox>
+    <VBox alignment="TOP_CENTER" prefHeight="175.0" prefWidth="113.0" spacing="2.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+        <children>
+            <Button id="submit" fx:id="buttonSubmit" mnemonicParsing="false" onAction="#clickSubmit" prefHeight="33.0" prefWidth="66.0" styleClass="theme.css" text="SUBMIT">
+                <VBox.margin>
+                    <Insets bottom="25.0" />
+                </VBox.margin>
+            </Button>
+            <Button id="long" fx:id="buttonLong" mnemonicParsing="false" styleClass="theme.css" text="Long" />
+            <Button id="short" fx:id="buttonShort" mnemonicParsing="false" styleClass="theme.css" text="Short" />
+        </children>
+        <GridPane.margin>
+            <Insets top="30.0" />
+        </GridPane.margin>
+    </VBox>
+    <Separator prefHeight="100.0" prefWidth="190.0" styleClass="theme.css" GridPane.columnSpan="2147483647" GridPane.rowIndex="4">
+        <GridPane.margin>
+            <Insets left="30.0" right="30.0" top="15.0" />
+        </GridPane.margin>
+        <padding>
+            <Insets top="10.0" />
+        </padding>
+    </Separator>
+    <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnSpan="2147483647" GridPane.rowIndex="3">
+        <children>
+            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="25.0">
+                <children>
+                    <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
+                        <children>
+                            <TextField id="tf2" fx:id="tfQTY" alignment="CENTER" editable="false" styleClass="theme.css" />
+                            <Label text="QTY">
+                                <VBox.margin>
+                                    <Insets />
+                                </VBox.margin></Label>
+                        </children>
+                        <HBox.margin>
+                            <Insets />
+                        </HBox.margin>
+                    </VBox>
+                    <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
+                        <children>
+                            <TextField id="tf2" fx:id="tfRISK" alignment="CENTER" editable="false" styleClass="theme.css" />
+                            <Label text="RISK">
+                                <VBox.margin>
+                                    <Insets />
+                                </VBox.margin></Label>
+                        </children>
+                    </VBox>
+                </children>
+            </HBox>
+            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="25.0">
+                <children>
+                    <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
+                        <children>
+                            <TextField id="tf2" fx:id="tfAMT" alignment="CENTER" editable="false" styleClass="theme.css" />
+                            <Label text="AMT">
+                                <VBox.margin>
+                                    <Insets />
+                                </VBox.margin></Label>
+                        </children>
+                        <HBox.margin>
+                            <Insets top="15.0" />
+                        </HBox.margin>
+                    </VBox>
+                    <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
+                        <children>
+                            <TextField id="tf2" fx:id="tfTGT" alignment="CENTER" editable="false" styleClass="theme.css" />
+                            <Label fx:id="labelTGT" text="TGT">
+                                <VBox.margin>
+                                    <Insets />
+                                </VBox.margin></Label>
+                        </children>
+                        <HBox.margin>
+                            <Insets top="15.0" />
+                        </HBox.margin>
+                    </VBox>
+                </children>
+            </HBox>
+        </children>
+        <GridPane.margin>
+            <Insets bottom="10.0" left="40.0" right="40.0" top="20.0" />
+        </GridPane.margin>
+    </VBox>
+    <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnSpan="2147483647" GridPane.rowIndex="5">
+        <children>
+            <HBox fx:id="rHBox" alignment="TOP_CENTER" prefHeight="50.0" prefWidth="225.0" scaleX="1.1" scaleY="1.1" spacing="15.0">
+                <children>
+                    <RadioButton fx:id="R1" mnemonicParsing="false" onAction="#click1R" text="1R" />
+                    <RadioButton fx:id="R2" mnemonicParsing="false" onAction="#click2R" text="2R" />
+                    <RadioButton fx:id="R3" mnemonicParsing="false" onAction="#click3R" text="3R" />
+                    <RadioButton fx:id="R4" mnemonicParsing="false" onAction="#click4R" text="4R" />
+                </children>
+                <VBox.margin>
+                    <Insets left="20.0" right="20.0" />
+                </VBox.margin>
+            </HBox>
+            <HBox fx:id="lmtHBox" alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="20.0">
+                <padding>
+                    <Insets left="30.0" right="30.0" top="5.0" />
+                </padding>
+                <children>
+                    <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0">
+                        <children>
+                            <TextField fx:id="tfR" alignment="CENTER" />
+                            <Label text="R">
+                                <VBox.margin>
+                                    <Insets />
+                                </VBox.margin></Label>
+                        </children>
+                    </VBox>
+                    <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0">
+                        <children>
+                            <TextField fx:id="tfLMT" alignment="CENTER" />
+                            <Label text="LMT">
+                                <VBox.margin>
+                                    <Insets />
+                                </VBox.margin></Label>
+                        </children>
+                    </VBox>
+                </children>
+                <VBox.margin>
+                    <Insets top="15.0" />
+                </VBox.margin>
+            </HBox>
+        </children>
+        <GridPane.margin>
+            <Insets bottom="15.0" top="20.0" />
+        </GridPane.margin>
+    </VBox>
+    <Text fill="GREY" strokeType="OUTSIDE" strokeWidth="0.0" text="\$" GridPane.rowIndex="5">
+        <font>
+            <Font size="18.0" />
+        </font>
+        <GridPane.margin>
+            <Insets left="95.0" top="20.0" />
+        </GridPane.margin>
+    </Text>
+    <Text fill="GREY" strokeType="OUTSIDE" strokeWidth="0.0" text="\%" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="5">
+        <GridPane.margin>
+            <Insets left="60.0" right="35.0" top="20.0" />
+        </GridPane.margin>
+        <font>
+            <Font size="18.0" />
+        </font>
+    </Text>
+    <Circle fx:id="circleConnection" fill="#3dd02f" radius="5.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" GridPane.columnIndex="1">
+        <GridPane.margin>
+            <Insets left="80.0" top="35.0" />
+        </GridPane.margin>
+    </Circle>
+    <Button mnemonicParsing="false" onAction="#clickHD1" text="HD" GridPane.rowIndex="1">
+        <GridPane.margin>
+            <Insets bottom="15.0" left="5.0" />
+        </GridPane.margin>
+    </Button>
+    <Button layoutX="15.0" layoutY="95.0" mnemonicParsing="false" onAction="#clickHD2" text="HD" GridPane.rowIndex="1">
+        <GridPane.margin>
+            <Insets left="5.0" top="60.0" />
+        </GridPane.margin>
+    </Button>
+    <Button layoutX="15.0" layoutY="95.0" mnemonicParsing="false" onAction="#clickLD1" text="LD" GridPane.rowIndex="1">
+        <GridPane.margin>
+            <Insets bottom="15.0" left="100.0" />
+        </GridPane.margin>
+    </Button>
+    <Button layoutX="15.0" layoutY="136.0" mnemonicParsing="false" onAction="#clickLD2" text="LD" GridPane.rowIndex="1">
+        <GridPane.margin>
+            <Insets left="100.0" top="60.0" />
+        </GridPane.margin>
+    </Button>
+    <MenuBar GridPane.columnSpan="2147483647">
+        <menus>
+            <Menu mnemonicParsing="false" text="Connect">
+                <items>
+                    <MenuItem fx:id="miConnect" mnemonicParsing="false" onAction="#clickConnect" text="Connect" />
+                    <MenuItem fx:id="miDisconnect" mnemonicParsing="false" onAction="#clickDisconnect" text="Disconnect" />
+                </items>
+            </Menu>
+            <Menu mnemonicParsing="false" text="Help">
+                <items>
+                    <MenuItem fx:id="miAbout" mnemonicParsing="false" onAction="#clickAbout" text="About" />
+                </items>
+            </Menu>
+        </menus>
+        <GridPane.margin>
+            <Insets />
+        </GridPane.margin>
+    </MenuBar>
+</children>
+</GridPane>
