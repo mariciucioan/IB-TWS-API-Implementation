@@ -1,10 +1,11 @@
 package com.ioanmariciuc.utils.ui;
 
 import com.ioanmariciuc.utils.ib.MyMethods;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
@@ -19,18 +20,8 @@ public class InputBox {
         window.initModality(Modality.APPLICATION_MODAL);
         window.setResizable(false);
         window.setTitle(title);
-        window.setWidth(500);
+        window.setWidth(300);
         window.setMinHeight(250);
-
-        TextField ip = new TextField();
-        ip.setText("127.0.0.1");
-        ip.setPromptText("IP");
-        ip.setStyle("-fx-background-radius: 25;" +
-                "-fx-border-radius: 25;" +
-                "-fx-border-width: 1.5px;" +
-                "-fx-border-color: black;" +
-                "-fx-text-fill: #454545;" +
-                "-fx-prompt-text-fill: #666666;");
 
         TextField port = new TextField();
         port.setText("7497");
@@ -40,28 +31,28 @@ public class InputBox {
                 "-fx-border-width: 1.5px;" +
                 "-fx-border-color: black;" +
                 "-fx-text-fill: #454545;" +
-                "-fx-prompt-text-fill: #666666;");
+                "-fx-prompt-text-fill: #666666;-fx-max-width: 75px");
+        port.setAlignment(Pos.CENTER);
 
-        TextField id = new TextField();
-        id.setText("2");
-        id.setPromptText("ID");
-        id.setStyle("-fx-background-radius: 25;" +
-                "-fx-border-radius: 25;" +
-                "-fx-border-width: 1.5px;" +
-                "-fx-border-color: black;" +
-                "-fx-text-fill: #454545;" +
-                "-fx-prompt-text-fill: #666666;");
+        Label socketPort = new Label();
+        socketPort.setText("Socket port");
+        socketPort.setStyle("-fx-text-fill: darkgray;-fx-font-size: 15;");
+
+        HBox hBox = new HBox(10);
+        hBox.getChildren().addAll(port, socketPort);
+        hBox.alignmentProperty().setValue(Pos.CENTER);
 
         Button button = new Button();
         button.setText(buttonMessage);
         button.setOnAction(e -> {
-            MyMethods.connect(ip.getText(), Integer.parseInt(port.getText()), Integer.parseInt(id.getText()));
+            MyMethods.connect("127.0.0.1", Integer.parseInt(port.getText()), 2);
             window.close();
         });
         button.setStyle("-fx-min-width: 75px;");
 
         VBox vBox = new VBox(15);
-        vBox.getChildren().addAll(ip, port, id, button);
+        vBox.getChildren().addAll(hBox, button);
+        vBox.setPadding(new Insets(10, 30, 10, 30));
         vBox.alignmentProperty().setValue(Pos.CENTER);
 
         StackPane layout = new StackPane();

@@ -93,7 +93,7 @@ public class Values {
     }
 
     public static double getStopSizeValue() {
-        return Math.abs(Values.entryValue-Values.stopValue);
+        return Utils.round(Math.abs(Values.entryValue-Values.stopValue), 3);
     }
 
     public static double getHigh() {
@@ -125,18 +125,18 @@ public class Values {
     }
 
     public static double getRealRisk() {
-        return Values.getQuantity() * Values.getStopSizeValue();
+        return Utils.round(Values.getQuantity() * Values.getStopSizeValue(), 3);
     }
 
     public static double getTotalAmount() {
-        return Values.getEntryValue() * Values.getQuantity();
+        return Utils.round(Values.getEntryValue() * Values.getQuantity(), 3);
     }
 
     public static double getTarget() {
         if(isShort()) {
-            return Values.getEntryValue() - (Values.getRTypeValue() * Values.getStopSizeValue());
+            return Utils.round(Values.getEntryValue() - (Values.getRTypeValue() * Values.getStopSizeValue()), 3);
         }
 
-        return Values.getEntryValue() + (Values.getRTypeValue() * Values.getStopSizeValue());
+        return Utils.round(Values.getEntryValue() + (Values.getRTypeValue() * Values.getStopSizeValue()), 3);
     }
 }

@@ -3,8 +3,7 @@
     -fx-window-color: #999999;
     -fx-window-text: #111111;
     -fx-background-color: #FAFAFA;
-    -fx-font-family: "Pragmatica-ExtraLight";
-    -fx-font-weight: bold;
+    -fx-font-family: "Pragmatica-ExtraLight.tff";
 }
 .label {
     -fx-text-fill: darkgray;
@@ -18,13 +17,16 @@
 #submit {
     -fx-background-color: #343434;
     -fx-text-fill: white;
+    -fx-font-size: 15px;
 }
 #long {
     -fx-border-color: darkgreen;
+    -fx-border-width: 2px;
     -fx-border-radius: 25;
 }
 #short {
     -fx-border-color: red;
+    -fx-border-width: 2px;
     -fx-border-radius: 25;
 }
 .text-field {
@@ -34,6 +36,7 @@
     -fx-border-color: black;
     -fx-text-fill: #454545;
     -fx-prompt-text-fill: #666666;
+    -fx-font-size: 14px;
 }
 #error {
     -fx-border-color: red;
@@ -56,10 +59,16 @@
 
 #connected {
     -fx-fill: Green;
+    -fx-scale-shape: 100%;
+}
+
+#connected-twinkle {
+    -fx-scale-shape: 115%;
 }
 
 #disconnected {
     -fx-fill: Darkred;
+    -fx-scale-shape: 100%;
 }
 
 .menu-bar {

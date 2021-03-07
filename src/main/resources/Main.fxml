@@ -1,16 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
 <?import javafx.scene.shape.*?>
 <?import javafx.scene.text.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<GridPane xmlns="http://javafx.com/javafx"
-          xmlns:fx="http://javafx.com/fxml"
-          prefHeight="540.0" prefWidth="250.0"
-          stylesheets="@theme.css"
-          fx:controller="com.ioanmariciuc.Controller">
+<GridPane prefHeight="540.0" prefWidth="250.0" stylesheets="@theme.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ioanmariciuc.Controller">
 <columnConstraints>
     <ColumnConstraints hgrow="SOMETIMES" maxWidth="250.0" minWidth="10.0" prefWidth="137.0" />
     <ColumnConstraints hgrow="SOMETIMES" maxWidth="129.0" minWidth="0.0" prefWidth="113.0" />
@@ -49,13 +46,13 @@
     </VBox>
     <VBox alignment="TOP_CENTER" prefHeight="175.0" prefWidth="113.0" spacing="2.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
         <children>
-            <Button id="submit" fx:id="buttonSubmit" mnemonicParsing="false" onAction="#clickSubmit" prefHeight="33.0" prefWidth="66.0" styleClass="theme.css" text="SUBMIT">
+            <Button id="submit" fx:id="buttonSubmit" mnemonicParsing="false" onAction="#clickSubmit" prefHeight="35.0" prefWidth="90.0" styleClass="theme.css" text="SUBMIT">
                 <VBox.margin>
-                    <Insets bottom="25.0" />
+                    <Insets bottom="25.0" top="5.0" />
                 </VBox.margin>
             </Button>
-            <Button id="long" fx:id="buttonLong" mnemonicParsing="false" styleClass="theme.css" text="Long" />
-            <Button id="short" fx:id="buttonShort" mnemonicParsing="false" styleClass="theme.css" text="Short" />
+            <Button id="long" fx:id="buttonLong" mnemonicParsing="false" prefHeight="20.0" prefWidth="65.0" styleClass="theme.css" text="Long" />
+            <Button id="short" fx:id="buttonShort" mnemonicParsing="false" prefHeight="20.0" prefWidth="65.0" styleClass="theme.css" text="Short" />
         </children>
         <GridPane.margin>
             <Insets top="30.0" />
@@ -75,7 +72,7 @@
                 <children>
                     <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
                         <children>
-                            <TextField id="tf2" fx:id="tfQTY" alignment="CENTER" editable="false" styleClass="theme.css" />
+                            <TextField id="tf2" fx:id="tfQTY" alignment="CENTER" editable="false" prefHeight="0.0" styleClass="theme.css" />
                             <Label text="QTY">
                                 <VBox.margin>
                                     <Insets />
@@ -142,29 +139,23 @@
                     <Insets left="20.0" right="20.0" />
                 </VBox.margin>
             </HBox>
-            <HBox fx:id="lmtHBox" alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="20.0">
+            <HBox fx:id="lmtHBox" alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="5.0">
                 <padding>
-                    <Insets left="30.0" right="30.0" top="5.0" />
+                    <Insets left="20.0" right="20.0" top="5.0" />
                 </padding>
                 <children>
-                    <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0">
-                        <children>
-                            <TextField fx:id="tfR" alignment="CENTER" />
-                            <Label text="R">
-                                <VBox.margin>
-                                    <Insets />
-                                </VBox.margin></Label>
-                        </children>
-                    </VBox>
-                    <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0">
-                        <children>
-                            <TextField fx:id="tfLMT" alignment="CENTER" />
-                            <Label text="LMT">
-                                <VBox.margin>
-                                    <Insets />
-                                </VBox.margin></Label>
-                        </children>
-                    </VBox>
+                      <Label text="R" />
+                      <TextField fx:id="tfR" alignment="CENTER" />
+                      <Label prefHeight="21.0" prefWidth="140.0" text="LMT">
+                     <HBox.margin>
+                        <Insets left="25.0" />
+                     </HBox.margin>
+                  </Label>
+                      <TextField fx:id="tfLMT" alignment="CENTER">
+                     <HBox.margin>
+                        <Insets />
+                     </HBox.margin>
+                  </TextField>
                 </children>
                 <VBox.margin>
                     <Insets top="15.0" />
@@ -177,18 +168,18 @@
     </VBox>
     <Text fill="GREY" strokeType="OUTSIDE" strokeWidth="0.0" text="\$" GridPane.rowIndex="5">
         <font>
-            <Font size="18.0" />
+            <Font size="20.0" />
         </font>
         <GridPane.margin>
-            <Insets left="95.0" top="20.0" />
+            <Insets left="82.0" top="40.0" />
         </GridPane.margin>
     </Text>
     <Text fill="GREY" strokeType="OUTSIDE" strokeWidth="0.0" text="\%" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="5">
         <GridPane.margin>
-            <Insets left="60.0" right="35.0" top="20.0" />
+            <Insets left="72.0" top="40.0" />
         </GridPane.margin>
         <font>
-            <Font size="18.0" />
+            <Font size="20.0" />
         </font>
     </Text>
     <Circle fx:id="circleConnection" fill="#3dd02f" radius="5.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" GridPane.columnIndex="1">
@@ -203,7 +194,7 @@
     </Button>
     <Button layoutX="15.0" layoutY="95.0" mnemonicParsing="false" onAction="#clickHD2" text="HD" GridPane.rowIndex="1">
         <GridPane.margin>
-            <Insets left="5.0" top="60.0" />
+            <Insets left="5.0" top="67.0" />
         </GridPane.margin>
     </Button>
     <Button layoutX="15.0" layoutY="95.0" mnemonicParsing="false" onAction="#clickLD1" text="LD" GridPane.rowIndex="1">
@@ -213,7 +204,7 @@
     </Button>
     <Button layoutX="15.0" layoutY="136.0" mnemonicParsing="false" onAction="#clickLD2" text="LD" GridPane.rowIndex="1">
         <GridPane.margin>
-            <Insets left="100.0" top="60.0" />
+            <Insets left="100.0" top="67.0" />
         </GridPane.margin>
     </Button>
     <MenuBar GridPane.columnSpan="2147483647">
@@ -222,11 +213,6 @@
                 <items>
                     <MenuItem fx:id="miConnect" mnemonicParsing="false" onAction="#clickConnect" text="Connect" />
                     <MenuItem fx:id="miDisconnect" mnemonicParsing="false" onAction="#clickDisconnect" text="Disconnect" />
-                </items>
-            </Menu>
-            <Menu mnemonicParsing="false" text="Help">
-                <items>
-                    <MenuItem fx:id="miAbout" mnemonicParsing="false" onAction="#clickAbout" text="About" />
                 </items>
             </Menu>
         </menus>

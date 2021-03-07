@@ -2,6 +2,7 @@ package com.ioanmariciuc.utils.ib;
 
 import com.ib.client.*;
 import com.ioanmariciuc.Controller;
+import com.ioanmariciuc.utils.Utils;
 import com.ioanmariciuc.utils.Values;
 import com.ioanmariciuc.utils.ui.ActionBox;
 import javafx.application.Platform;
@@ -32,7 +33,29 @@ public class IBReceiver implements EWrapper {
 
     @Override
     public void tickPrice(int tickerId, int field, double price, TickAttrib attribs) {
+        if(field == 6) { // hotd
+            if(tickerId == 3001 || tickerId == 3003) {
+                Values.setHigh(price);
+            }
 
+            if(tickerId == 3001) {
+                Platform.runLater(()-> Controller.c.setEntryText(String.valueOf(Values.getHigh())));
+            }
+            if(tickerId == 3003) {
+                Platform.runLater(()-> Controller.c.setStopText(String.valueOf(Values.getHigh())));
+            }
+        } else if(field == 7) {
+            if(tickerId == 3002 || tickerId == 3004) {
+                Values.setLow(price);
+            }
+            if(tickerId == 3002) {
+                Platform.runLater(()-> Controller.c.setEntryText(String.valueOf(Values.getLow())));
+            }
+
+            if(tickerId == 3004) {
+                Platform.runLater(()-> Controller.c.setStopText(String.valueOf(Values.getLow())));
+            }
+        }
     }
 
     @Override
@@ -106,25 +129,30 @@ public class IBReceiver implements EWrapper {
         if(Values.getContract() != null) {
             String action = (Values.isLong() ? "BUY" : "SELL");
             int qty = Values.getQuantity();
-            double lmtPercent = Values.getLimitValue() / 100;
+            double aux = Utils.round(Values.getEntryValue(), 2);
+            double lmtPercent = Utils.round(Values.getLimitValue() / 100, 2);
             double lmt;
-            double takeProfit = Values.getTarget();
-            double stopLoss = Values.getStopValue();
+            double takeProfit = Utils.round(Values.getTarget(), 2);
+            double stopLoss = Utils.round(Values.getStopValue(), 2);
             if (Values.isShort())
-                lmt = Values.getEntryValue() - (lmtPercent * Values.getStopSizeValue());
-            else lmt = Values.getEntryValue() + (lmtPercent * Values.getStopSizeValue());
+                lmt = Utils.round(Values.getEntryValue() - (lmtPercent * Values.getStopSizeValue()), 2);
+            else lmt = Utils.round(Values.getEntryValue() + (lmtPercent * Values.getStopSizeValue()), 2);
 
-            List<Order> bracket = MyMethods.createBracketOrder(orderId++, action, qty, lmt, takeProfit, stopLoss);
+            System.out.println("bracket order: " + action + ", " + qty + ", " + aux + ", " + lmt + ", " + takeProfit + ", " + stopLoss);
+
+            List<Order> bracket = MyMethods.createBracketOrder(orderId++, action, qty, aux, lmt, takeProfit, stopLoss);
             MyMethods.placeOrder(bracket);
 
-            System.out.println("Request id: " + orderId);
+            System.out.println();
+            System.out.println();
+            System.out.println();
         }
     }
 
     @Override
     public void contractDetails(int reqId, ContractDetails contractDetails) {
         Values.setName(contractDetails.longName());
-
+        Values.ibReceiver.getClientSocket().reqMarketDataType(3);
         Platform.runLater(() -> Controller.c.setLabelName(Values.getName()));
     }
 
@@ -174,18 +202,24 @@ public class IBReceiver implements EWrapper {
     }
 
     @Override
-    public void historicalData(int i, Bar bar) {
-        Values.setHigh(bar.high());
-        Values.setLow(bar.low());
-
-        if(i == 255) {
-            Platform.runLater(() -> Controller.c.setEntryText(String.valueOf(Values.getHigh())));
-        } else if(i == 256) {
-            Platform.runLater(() -> Controller.c.setEntryText(String.valueOf(Values.getLow())));
-        }  else if(i == 257) {
-            Platform.runLater(() -> Controller.c.setStopText(String.valueOf(Values.getHigh())));
-        } else if(i == 258) {
-            Platform.runLater(() -> Controller.c.setStopText(String.valueOf(Values.getLow())));
+    public void historicalData(int tickerId, Bar bar) {
+        switch (tickerId) {
+            case 4001:
+                Values.setHigh(bar.high());
+                Platform.runLater(() -> Controller.c.setEntryText(String.valueOf(bar.high())));
+                break;
+            case 4002:
+                Values.setLow(bar.low());
+                Platform.runLater(() -> Controller.c.setEntryText(String.valueOf(bar.low())));
+                break;
+            case 4003:
+                Values.setHigh(bar.high());
+                Platform.runLater(() -> Controller.c.setStopText(String.valueOf(bar.high())));
+                break;
+            case 4004:
+                Values.setLow(bar.low());
+                Platform.runLater(() -> Controller.c.setStopText(String.valueOf(bar.low())));
+                break;
         }
     }
 
@@ -208,27 +242,6 @@ public class IBReceiver implements EWrapper {
     public void realtimeBar(int reqId, long time, double open, double high,
                             double low, double close, long volume, double wap, int count) {
         System.out.println("RealTimeBars. " + reqId + " - Time: " + time + ", Open: " + open + ", High: " + high + ", Low: " + low + ", Close: " + close + ", Volume: " + volume + ", Count: " + count + ", WAP: " + wap);
-
-        if(reqId == 3001 || reqId == 3003) {
-            Values.setHigh(high);
-        } else if(reqId == 3002 || reqId == 3004) {
-            Values.setLow(low);
-        }
-        if(reqId == 3001) {
-            Platform.runLater(()-> Controller.c.setEntryText(String.valueOf(Values.getHigh())));
-        }
-
-        if(reqId == 3001) {
-            Platform.runLater(()-> Controller.c.setEntryText(String.valueOf(Values.getLow())));
-        }
-
-        if(reqId == 3003) {
-            Platform.runLater(()-> Controller.c.setStopText(String.valueOf(Values.getHigh())));
-        }
-
-        if(reqId == 3004) {
-            Platform.runLater(()-> Controller.c.setStopText(String.valueOf(Values.getLow())));
-        }
     }
 
     @Override
@@ -252,8 +265,8 @@ public class IBReceiver implements EWrapper {
     }
 
     @Override
-    public void marketDataType(int i, int i1) {
-
+    public void marketDataType(int reqId, int marketDataType) {
+        System.out.println("MarketDataType. ["+reqId+"], Type: ["+marketDataType+"]\n");
     }
 
     @Override
@@ -340,7 +353,6 @@ public class IBReceiver implements EWrapper {
         // Order cancelled, can't modify a filled order, order held while securities are located, cancel attempted
         // when order is not in a cancellable state, Unable to modify this order as its still being processed
         if (Arrays.asList(201, 202, 104, 404, 161, 2102).contains(errorCode)) {
-            Platform.runLater(() -> ActionBox.display("Order canceled", errorMsg, "Ok", "red"));
             return;
         }
 
@@ -349,6 +361,10 @@ public class IBReceiver implements EWrapper {
 
         // Happens when IB kills the order for whatever reason, and then I try to modify it
         if (errorCode == 103)
+            return;
+
+        // if can't find order
+        if(errorCode == 135)
             return;
 
         // Duplicate ticker id
@@ -435,14 +451,23 @@ public class IBReceiver implements EWrapper {
             if(!c.currency().equals("USD") || !c.secType().equals(Types.SecType.STK))
                 return;
 
+            if(!c.symbol().equals(Values.getSymbolValue())) {
+                Values.setContract(null);
+                Platform.runLater(() -> Controller.c.setLabelName("STOCK NAME"));
+                Values.setName("STOCK NAME");
+                return;
+            }
+
             counter ++;
 
             c.exchange("SMART");
             Values.setContract(c);
             clientSocket.reqContractDetails(222, c);
+            break;
         }
 
         if(counter == 0) {
+            Values.setContract(null);
             Platform.runLater(() -> Controller.c.setLabelName("STOCK NAME"));
             Values.setName("STOCK NAME");
         }
@@ -450,7 +475,7 @@ public class IBReceiver implements EWrapper {
 
     @Override
     public void historicalDataEnd(int i, String s, String s1) {
-
+        System.out.println("End of historical data: " + s + " -> " + s1);
     }
 
     @Override
@@ -494,8 +519,8 @@ public class IBReceiver implements EWrapper {
     }
 
     @Override
-    public void headTimestamp(int i, String s) {
-
+    public void headTimestamp(int reqId, String headTimestamp) {
+        System.out.println("Head timestamp. Req Id: " + reqId + ", headTimestamp: " + headTimestamp);
     }
 
     @Override
@@ -563,9 +588,8 @@ public class IBReceiver implements EWrapper {
     }
 
     @Override
-    public void tickByTickBidAsk(int reqId, long time, double bidPrice, double askPrice, int bidSize, int askSize,
+    public void tickByTickBidAsk(int tickerId, long time, double bidPrice, double askPrice, int bidSize, int askSize,
                                  TickAttribBidAsk tickAttribBidAsk) {
-        System.out.println(EWrapperMsgGenerator.tickByTickBidAsk(reqId, time, bidPrice, askPrice, bidSize, askSize, tickAttribBidAsk));
     }
 
     @Override

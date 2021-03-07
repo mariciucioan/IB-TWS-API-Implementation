@@ -2,20 +2,26 @@ package com.ioanmariciuc;
 
 import com.ioanmariciuc.utils.Values;
 import com.ioanmariciuc.utils.ib.MyMethods;
-import com.ioanmariciuc.utils.StringUtils;
+import com.ioanmariciuc.utils.Utils;
 import com.ioanmariciuc.utils.ui.ActionBox;
 import com.ioanmariciuc.utils.ui.InputBox;
+import javafx.animation.KeyFrame;
+import javafx.animation.PauseTransition;
+import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.shape.Circle;
+import javafx.util.Duration;
 
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -54,27 +60,31 @@ public class Controller implements Initializable {
         R3.setToggleGroup(radioGroup);
         R4.setToggleGroup(radioGroup);
 
+        PauseTransition pause = new PauseTransition(Duration.seconds(1));
         tfSymbol.textProperty().addListener((observable, oldValue, newValue) -> {
-            if(newValue.length() < 2) {
-                labelStockName.setText("STOCK NAME");
-                Values.setName("STOCK NAME");
-                Values.setContract(null);
-                return;
-            }
+            pause.setOnFinished(event -> {
+                if(newValue.length() < 2) {
+                    labelStockName.setText("STOCK NAME");
+                    Values.setName("STOCK NAME");
+                    Values.setContract(null);
+                    return;
+                }
 
-            tfSymbol.setText(newValue.toUpperCase());
-            Values.setSymbolValue(newValue);
+                tfSymbol.setText(newValue.toUpperCase());
+                Values.setSymbolValue(newValue);
 
-            if(MyMethods.isConnected()) {
-                Values.ibReceiver.getClientSocket().reqMatchingSymbols(211, newValue);
-            } else {
-                labelStockName.setText("STOCK NAME");
-                Values.setName("STOCK NAME");
-                Values.setContract(null);
-            }
+                if(MyMethods.isConnected()) {
+                    Values.ibReceiver.getClientSocket().reqMatchingSymbols(211, newValue);
+                } else {
+                    labelStockName.setText("STOCK NAME");
+                    Values.setName("STOCK NAME");
+                    Values.setContract(null);
+                }
 
-            tfSymbol.setId("");
-            showDetails();
+                tfSymbol.setId("");
+                showDetails();
+            });
+            pause.playFromStart();
         });
 
         tfEntry.textProperty().addListener((observable, oldValue, newValue) -> {
@@ -82,19 +92,28 @@ public class Controller implements Initializable {
                 tfEntry.setText(newValue.replaceAll("[^0-9.,]", ""));
             }
 
-            Values.setEntryValue(StringUtils.toDouble(newValue));
-            if(StringUtils.toDouble(newValue) > Values.getStopValue()) {
-                buttonLong.setStyle("-fx-background-color: darkgreen;-fx-text-fill: white;");
-                buttonShort.setStyle("-fx-background-color: lightgray;-fx-text-fill: gray;");
-                Values.setLong();
-            } else {
-                buttonLong.setStyle("-fx-background-color: lightgray;-fx-text-fill: gray;");
-                buttonShort.setStyle("-fx-background-color: red;-fx-text-fill: white;");
-                Values.setShort();
+            Values.setEntryValue(Utils.toDouble(newValue));
+
+            if(Values.getStopValue() != 0) {
+                if (Utils.toDouble(newValue) > Values.getStopValue()) {
+                    buttonLong.setStyle("-fx-background-color: darkgreen;-fx-text-fill: white;");
+                    buttonShort.setStyle("-fx-background-color: lightgray;-fx-text-fill: gray;");
+                    Values.setLong();
+                } else {
+                    buttonLong.setStyle("-fx-background-color: lightgray;-fx-text-fill: gray;");
+                    buttonShort.setStyle("-fx-background-color: red;-fx-text-fill: white;");
+                    Values.setShort();
+                }
+            }
+
+            if(Utils.toDouble(newValue) == 0) {
+                buttonShort.setStyle("-fx-background-color: lightgray;");
+                buttonLong.setStyle("-fx-background-color: lightgray;");
             }
 
             tfEntry.setId("");
-            tfEntry.setText(newValue.replaceAll("\\.", ","));
+            if(newValue.contains(","))
+                tfEntry.setText(newValue.replaceAll(",", "."));
             showDetails();
         });
 
@@ -103,19 +122,27 @@ public class Controller implements Initializable {
                 tfStop.setText(newValue.replaceAll("[^0-9.,]", ""));
             }
 
-            Values.setStopValue(StringUtils.toDouble(newValue));
-            if(StringUtils.toDouble(newValue) > Values.getEntryValue()) {
-                buttonLong.setStyle("-fx-background-color: lightgray;-fx-text-fill: gray;");
-                buttonShort.setStyle("-fx-background-color: red;-fx-text-fill: white;");
-                Values.setShort();
-            } else {
-                buttonLong.setStyle("-fx-background-color: darkgreen;-fx-text-fill: white;");
-                buttonShort.setStyle("-fx-background-color: lightgray;-fx-text-fill: gray;");
-                Values.setLong();
+            Values.setStopValue(Utils.toDouble(newValue));
+            if(Values.getEntryValue() != 0) {
+                if (Utils.toDouble(newValue) > Values.getEntryValue()) {
+                    buttonLong.setStyle("-fx-background-color: lightgray;-fx-text-fill: gray;");
+                    buttonShort.setStyle("-fx-background-color: red;-fx-text-fill: white;");
+                    Values.setShort();
+                } else {
+                    buttonLong.setStyle("-fx-background-color: darkgreen;-fx-text-fill: white;");
+                    buttonShort.setStyle("-fx-background-color: lightgray;-fx-text-fill: gray;");
+                    Values.setLong();
+                }
+            }
+
+            if(Utils.toDouble(newValue) == 0) {
+                buttonShort.setStyle("-fx-background-color: lightgray;");
+                buttonLong.setStyle("-fx-background-color: lightgray;");
             }
 
             tfStop.setId("");
-            tfStop.setText(newValue.replaceAll("\\.", ","));
+            if(newValue.contains(","))
+                tfStop.setText(newValue.replaceAll(",", "."));
             showDetails();
         });
 
@@ -125,10 +152,11 @@ public class Controller implements Initializable {
                 return;
             }
 
-            Values.setRValue(StringUtils.toDouble(newValue));
+            Values.setRValue(Utils.toDouble(newValue));
 
             tfR.setId("");
-            tfR.setText(newValue.replaceAll("\\.", ","));
+            if(newValue.contains(","))
+                tfR.setText(newValue.replaceAll(",", "."));
             showDetails();
         });
         tfLMT.textProperty().addListener((observable, oldValue, newValue) -> {
@@ -137,15 +165,16 @@ public class Controller implements Initializable {
                 return;
             }
 
-            if(StringUtils.toDouble(newValue) >= 100) {
+            if(Utils.toDouble(newValue) >= 100) {
                 tfLMT.setText("100");
                 return;
             }
 
-            Values.setLimitValue(StringUtils.toDouble(newValue));
+            Values.setLimitValue(Utils.toDouble(newValue));
 
             tfLMT.setId("");
-            tfLMT.setText(newValue.replaceAll("\\.", ","));
+            if(newValue.contains(","))
+                tfLMT.setText(newValue.replaceAll(",", "."));
             showDetails();
         });
 
@@ -161,13 +190,13 @@ public class Controller implements Initializable {
             DecimalFormat formatter = (DecimalFormat) NumberFormat.getInstance(Locale.getDefault());
             DecimalFormatSymbols symbols = formatter.getDecimalFormatSymbols();
 
-            symbols.setGroupingSeparator(' ');
+            symbols.setGroupingSeparator(',');
             formatter.setDecimalFormatSymbols(symbols);
 
             tfQTY.setText(df2.format(Values.getQuantity()));
-            tfRISK.setText(df2.format(Values.getRealRisk()).replaceAll("\\.", ",") + "$");
-            tfAMT.setText(formatter.format(Values.getTotalAmount()).replaceAll("\\.", ",") + "$");
-            tfTGT.setText(df2.format(Values.getTarget()).replaceAll("\\.", ",") + "$");
+            tfRISK.setText(df2.format(Values.getRealRisk()) + "$");
+            tfAMT.setText(formatter.format(Values.getTotalAmount()) + "$");
+            tfTGT.setText(df2.format(Values.getTarget()) + "$");
         }
     }
 
@@ -215,13 +244,17 @@ public class Controller implements Initializable {
                 tfSymbol.setId("error");
             }
         } else {
+            System.out.println();
+            System.out.println();
+            System.out.println();
+            System.out.println();
             System.out.println(Values.getSymbolValue());
             System.out.println(Values.getEntryValue());
             System.out.println(Values.getStopValue());
             System.out.println(Values.getRValue());
             System.out.println(Values.getLimitValue());
             System.out.println(Values.getRTypeValue());
-            System.out.println(Values.getContract().toString());
+            System.out.println(Values.getStopSizeValue());
             Values.ibReceiver.getClientSocket().reqIds(Values.ibReceiver.getCurrentOrderId());
         }
 
@@ -260,14 +293,6 @@ public class Controller implements Initializable {
         Values.setRTypeValue(4);
         rHBox.setId("");
         showDetails();
-
-        System.out.println(event);
-    }
-
-    @FXML
-    private void clickAbout(ActionEvent event) {
-        String str ="TWS API Implementation using java.\nAuthor: Mariciuc Ioan\nContact: mmmariciuc223@gmail.com";
-        ActionBox.display("About", str);
 
         System.out.println(event);
     }
@@ -315,33 +340,51 @@ public class Controller implements Initializable {
 
     @FXML
     private void clickHD1(ActionEvent event) {
-        if(Values.getContract() != null)
-            Values.ibReceiver.getClientSocket().reqRealTimeBars(3001, Values.getContract(), 3, "BID", true, null);
+        if(Values.getContract() != null) {
+            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyyMMdd");
+            String endOfDay = dtf.format(LocalDateTime.now()) + " 16:30:00 EST";
 
+            Values.ibReceiver.getClientSocket().reqHistoricalData(4001, Values.getContract(),
+                    endOfDay, "26200 S", "1 day", "TRADES", 1, 2, false, null);
+        }
+                    
         System.out.println(event);
     }
 
     @FXML
     private void clickLD1(ActionEvent event) {
-        if(Values.getContract() != null)
-            Values.ibReceiver.getClientSocket().reqRealTimeBars(3002, Values.getContract(), 3, "ASK", true, null);
+        if(Values.getContract() != null) {
+            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyyMMdd");
+            String endOfDay = dtf.format(LocalDateTime.now()) + " 16:30:00 EST";
 
+            Values.ibReceiver.getClientSocket().reqHistoricalData(4002, Values.getContract(),
+                    endOfDay, "26200 S", "1 day", "TRADES", 1, 2, false, null);
+        }
         System.out.println(event);
     }
 
     @FXML
     private void clickHD2(ActionEvent event) {
-        if(Values.getContract() != null)
-            Values.ibReceiver.getClientSocket().reqRealTimeBars(3003, Values.getContract(), 3, "BID", true, null);
+        if(Values.getContract() != null) {
+            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyyMMdd");
+            String endOfDay = dtf.format(LocalDateTime.now()) + " 16:30:00 EST";
+
+            Values.ibReceiver.getClientSocket().reqHistoricalData(4003, Values.getContract(),
+                    endOfDay, "26200 S", "1 day", "TRADES", 1, 2, false, null);
+        }
 
         System.out.println(event);
     }
 
     @FXML
     private void clickLD2(ActionEvent event) {
-        if(Values.getContract() != null)
-            Values.ibReceiver.getClientSocket().reqRealTimeBars(3004, Values.getContract(), 3, "ASK", true, null);
+        if(Values.getContract() != null) {
+            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyyMMdd");
+            String endOfDay = dtf.format(LocalDateTime.now()) + " 16:30:00 EST";
 
+            Values.ibReceiver.getClientSocket().reqHistoricalData(4004, Values.getContract(),
+                    endOfDay, "26200 S", "1 day", "TRADES", 1, 2, false, null);
+        }
         System.out.println(event);
     }
 
@@ -356,5 +399,16 @@ public class Controller implements Initializable {
 
     public void setStopText(String text) {
         tfStop.setText(text);
+    }
+
+    public void circleTwinkle() {
+        Timeline flasher = new Timeline(
+                new KeyFrame(Duration.seconds(0.3), e -> circleConnection.setId("connected-twinkle")),
+                new KeyFrame(Duration.seconds(0.6), e -> circleConnection.setId(
+                        (MyMethods.isConnected() ? "connected" : "disconnected")))
+        );
+
+        flasher.setCycleCount(3);
+        flasher.play();
     }
 }

@@ -13,18 +13,23 @@ import java.util.List;
 
 public class MyMethods {
 
-    public static StringBuilder sb;
-
     public static void connect(String ip, int port, int clientID) {
         EClientSocket client = Values.ibReceiver.getClientSocket();
         client.eConnect(ip, port, clientID);
 
         final EReader reader = new EReader(client, Values.ibReceiver.getReaderSignal());
+        final boolean[] wasConnected = {false};
 
         reader.start();
         new Thread(() -> {
             while (client.isConnected()) {
-                Platform.runLater(() -> Controller.c.updateCircle());
+                if(!wasConnected[0]) {
+                    Platform.runLater(() -> Controller.c.circleTwinkle());
+                }
+                wasConnected[0] = true;
+                Platform.runLater(() -> {
+                    Controller.c.updateCircle();
+                });
                 Values.ibReceiver.getReaderSignal().waitForSignal();
                 try {
                     reader.processMsgs();
@@ -33,10 +38,17 @@ public class MyMethods {
                 }
             }
 
-            if(!client.isConnected()) {
+            if(!client.isConnected() && wasConnected[0]) {
                 Platform.runLater(() -> {
                     Controller.c.updateCircle();
+                    Controller.c.circleTwinkle();
                     ActionBox.display("INFO", "Connection lost !", "Uf, Ok...", "red");
+                });
+            } else {
+                Platform.runLater(() -> {
+                    Controller.c.updateCircle();
+                    Controller.c.circleTwinkle();
+                    ActionBox.display("INFO", "IB Error: -1 502 Couldn't connect to TWS. Confirm that \"Enable ActiveX and Socket Clients\" is enabled and connection port is the same as \"Socket Port\" on the TWS \"Edit->Global Configuration...->API->Settings\" menu.", "Uf, Ok...", "red");
                 });
             }
         }).start();
@@ -48,32 +60,18 @@ public class MyMethods {
 
     public static void disconnect() {
         Values.ibReceiver.getClientSocket().eDisconnect();
+        Platform.runLater(() -> Controller.c.circleTwinkle());
     }
 
-    public static List<Order> createBracketOrder(int parentOrderId, String action, double quantity, double limitPrice, double takeProfitLimitPrice, double stopLossPrice) {
-
-        sb = new StringBuilder();
-        double lmtPercent = Values.getLimitValue() / 100;
-
-        System.out.println("debug 1");
-
+    public static List<Order> createBracketOrder(int parentOrderId, String action, double quantity, double auxPrice, double limitPrice, double takeProfitLimitPrice, double stopLossPrice) {
         Order parent = new Order();
         parent.orderId(parentOrderId);
         parent.action(action);
-        parent.orderType("LMT");
+        parent.orderType("STP LMT");
         parent.totalQuantity(quantity);
         parent.lmtPrice(limitPrice);
+        parent.auxPrice(auxPrice);
         parent.transmit(false);
-
-        System.out.println("debug 2");
-
-        sb.append(action).append(" STOP LIMIT ORDER: ").append((int) quantity)
-                .append(" shares @ ").append(Values.getEntryValue()).append("$ stop with ")
-                .append(limitPrice).append("$ limit, according to the 10% limit preset (")
-                .append(Values.getLimitValue()).append("% of ").append(Values.getStopSizeValue())
-                .append("$ is ").append(lmtPercent * Values.getStopSizeValue()).append("$\n");
-
-        System.out.println("debug 3");
 
         Order stopLoss = new Order();
         stopLoss.orderId(parent.orderId() + 1);
@@ -82,15 +80,7 @@ public class MyMethods {
         stopLoss.auxPrice(stopLossPrice);
         stopLoss.totalQuantity(quantity);
         stopLoss.parentId(parentOrderId);
-        stopLoss.transmit(true);
-
-        System.out.println("debug 4");
-
-        sb.append(action.equals("BUY") ? "SELL" : "BUY").append(" STOP MARKET ORDER: ")
-                .append((int) quantity).append(" shares @ ").append(stopLossPrice)
-                .append("$. Indicated in the stop price.\n");
-
-        System.out.println("debug 5");
+        stopLoss.transmit(false);
 
         Order takeProfit = new Order();
         takeProfit.orderId(parent.orderId() + 2);
@@ -99,24 +89,12 @@ public class MyMethods {
         takeProfit.totalQuantity(quantity);
         takeProfit.lmtPrice(takeProfitLimitPrice);
         takeProfit.parentId(parentOrderId);
-        takeProfit.transmit(false);
-
-        System.out.println("debug 6");
-
-        sb.append(action.equals("BUY") ? "SELL" : "BUY").append(" LIMIT ORDER: ")
-                .append((int) quantity).append(" shares @ ").append(takeProfitLimitPrice)
-                .append("$ as calculated in N7.\n");
+        takeProfit.transmit(true);
 
         List<Order> bracketOrder = new ArrayList<>();
         bracketOrder.add(parent);
         bracketOrder.add(stopLoss);
         bracketOrder.add(takeProfit);
-
-        System.out.println("debug 7");
-
-        Platform.runLater(() -> ActionBox.display("Bracket Order", sb.toString()));
-
-        System.out.println("debug 8");
 
         return bracketOrder;
     }
@@ -127,8 +105,7 @@ public class MyMethods {
                 Values.ibReceiver.getClientSocket().placeOrder(o.orderId(), Values.getContract(), o);
         }
 
-        if(Values.ibReceiver.getClientSocket().isAsyncEConnect())
-
+        Platform.runLater(() -> Controller.c.circleTwinkle());
         Platform.runLater(() -> Controller.c.reset());
     }
 }
